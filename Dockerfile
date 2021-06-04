@@ -21,6 +21,6 @@ RUN cargo install --target x86_64-unknown-linux-musl --path .
 # 2: Copy the executable and extra files ("static") to an empty Docker image
 FROM scratch
 COPY --from=builder /usr/local/cargo/bin/hello-service .
-COPY static .
+# COPY static .
 USER 1000
 CMD ["./hello-service"]
