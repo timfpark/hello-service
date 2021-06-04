@@ -1,4 +1,4 @@
-# 1: Build the exe
+# 1: Build the executable
 FROM rust:1.52 as builder
 WORKDIR /usr/src
 
