@@ -1,26 +1,14 @@
-# 1: Build the executable
-FROM rust:1.52 as builder
-WORKDIR /usr/src
+FROM rust:1.52 as build
 
-# 1a: Prepare for static linking
-RUN apt-get update && \
-    apt-get dist-upgrade -y && \
-    apt-get install -y musl-tools && \
-    rustup target add x86_64-unknown-linux-musl
+COPY ./ ./
 
-# 1b: Download and compile Rust dependencies (and store as a separate Docker layer)
-RUN USER=root cargo new hello-service 
-WORKDIR /usr/src/hello-service
-COPY Cargo.toml Cargo.lock ./
-RUN cargo install --target x86_64-unknown-linux-musl --path .
+RUN cargo build --release
 
-# 1c: Build the exe using the actual source code
-COPY src ./src
-RUN cargo install --target x86_64-unknown-linux-musl --path .
+RUN mkdir -p /build
+RUN cp target/release/hello-service /build/
 
-# 2: Copy the executable and extra files ("static") to an empty Docker image
-FROM scratch
-COPY --from=builder /usr/local/cargo/bin/hello-service .
-# COPY static .
-USER 1000
-CMD ["./hello-service"]
+FROM ubuntu:18.04
+
+COPY --from=build /build/hello-service /
+
+CMD ["/hello-service"]
