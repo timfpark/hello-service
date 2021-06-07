@@ -1,8 +1,5 @@
-use actix_web::{web, App, HttpServer, Responder};
-use actix_web::middleware::Logger;
+use actix_web::{middleware::Logger, web, App, HttpServer, Responder};
 use std::env;
-
-// use std::env;
 
 async fn greet() -> impl Responder {
     let cluster = env::var("CLUSTER").unwrap_or("unknown".to_string());
@@ -13,6 +10,9 @@ async fn greet() -> impl Responder {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    std::env::set_var("RUST_LOG", "actix_web=info");
+    env_logger::init();
+
     let port_string = env::var("PORT").unwrap_or("8080".to_string());
     let port = port_string.parse::<u16>().unwrap();
 
