@@ -1,4 +1,5 @@
 use actix_web::{middleware::Logger, web, App, HttpServer, Responder};
+use actix_web_prom::PrometheusMetrics;
 use std::env;
 
 async fn greet() -> impl Responder {
@@ -16,9 +17,12 @@ async fn main() -> std::io::Result<()> {
     let port_string = env::var("PORT").unwrap_or("8080".to_string());
     let port = port_string.parse::<u16>().unwrap();
 
-    HttpServer::new(|| {
+    let prometheus = PrometheusMetrics::new("api", Some("/metrics"), None);
+
+    HttpServer::new(move || {
         App::new()
             .wrap(Logger::default())
+            .wrap(prometheus.clone())
             .route("/", web::get().to(greet))
     })
     .bind(("127.0.0.1", port))?
