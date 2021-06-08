@@ -5,8 +5,9 @@ use std::env;
 async fn greet() -> impl Responder {
     let cluster = env::var("CLUSTER").unwrap_or("unknown".to_string());
     let ring = env::var("RING").unwrap_or("unknown".to_string());
+    let tag = env::var("TAG").unwrap_or("unknown".to_string());
 
-    format!("Hello from the '{}' ring in the '{}' cluster!", &ring, &cluster)
+    format!("Hello from the '{}' ring in the '{}' cluster with tag '{}'!", &ring, &cluster, &tag)
 }
 
 #[actix_web::main]
