@@ -7,7 +7,7 @@ async fn greet() -> impl Responder {
     let ring = env::var("RING").unwrap_or("unknown".to_string());
     let tag = env::var("TAG").unwrap_or("unknown".to_string());
 
-    format!("Hello from the '{}' ring in the '{}' cluster with tag '{}'!", &ring, &cluster, &tag)
+    format!("Bonjour from the '{}' ring in the '{}' cluster with tag '{}'!", &ring, &cluster, &tag)
 }
 
 #[actix_web::main]
